@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import io.nirahtech.cache.configuration.Configuration;
 
@@ -24,7 +25,7 @@ public final class InMemoryCache<T> extends AbstractCache <T> {
         this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         this.scheduledExecutorService.scheduleAtFixedRate(() -> {
             synchronized (this.datasource) {
-                final List<Key> expiredKeys = this.datasource.entrySet().stream().filter(entry -> entry.getValue().getExpirationDate().isBefore(LocalDateTime.now())).map(entry -> entry.getKey()).toList();
+                final List<Key> expiredKeys = this.datasource.entrySet().stream().filter(entry -> entry.getValue().getExpirationDate().isBefore(LocalDateTime.now())).map(entry -> entry.getKey()).collect(Collectors.toList());
                 expiredKeys.forEach(key -> {
                     this.delete(key);
                 });
@@ -88,6 +89,6 @@ public final class InMemoryCache<T> extends AbstractCache <T> {
     public void close() throws IOException {
         this.datasource.clear();
         this.scheduledExecutorService.shutdownNow();
-        this.scheduledExecutorService.close();
+        // this.scheduledExecutorService.close();
     }
 }

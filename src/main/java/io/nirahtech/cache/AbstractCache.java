@@ -2,7 +2,7 @@ package io.nirahtech.cache;
 
 import io.nirahtech.cache.configuration.Configuration;
 
-abstract sealed class AbstractCache<T> implements Cache<T> permits InMemoryCache {
+abstract class AbstractCache<T> implements Cache<T> {
 
     protected final Configuration configuration;
 
